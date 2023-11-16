@@ -1,7 +1,9 @@
 // calling express
 const express = require("express");
 const app = express();
-const PORT = 3000;
+// for env variables file
+require("dotenv").config();
+const PORT = process.env.PORT || 3000;
 // import router
 const studentRoutes = require("./src/students/routes");
 
