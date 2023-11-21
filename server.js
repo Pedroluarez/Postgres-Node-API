@@ -1,11 +1,12 @@
 // calling express
 const express = require("express");
+// immport cors
 const app = express();
 // for env variables file
 require("dotenv").config();
 const PORT = process.env.PORT || 3000;
 // import router
-const studentRoutes = require("./src/students/routes");
+const studentRoutes = require("./src/routes/routes");
 
 // middleware
 app.use(express.json());

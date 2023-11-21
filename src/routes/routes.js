@@ -1,6 +1,6 @@
 const Router = require("express");
 // import controller
-const controller = require("./controller");
+const controller = require("../controllers/controller");
 
 const router = Router();
 
