@@ -1,10 +1,17 @@
 # Postgres-Node-API
 
-This is focus on CRUD operations in Node+Express using PostgresSQL.
+Created using Node, Express and PostgresSQL.
 
 ### Application Features
 
-Create, Read, Update and Delete data from API
+- Node
+- Express
+- Postgres
+- JWT
+- brypt
+- cors
+- dotenv
+- nodemon
 
 ### Setup this project
 
