@@ -1,8 +1,8 @@
 "use strict";
 
-// import db
-const pool = require("../../db");
-// import queries
+const pg = require("pg");
+const config = require("../../config");
+const pool = new pg.Pool(config.database);
 const queries = require("../queries/queries");
 
 module.exports = {
@@ -37,17 +37,17 @@ module.exports = {
   // post student
   postStudent: (req, res) => {
     try {
-      const { name, email, age, dob } = req.body;
+      const { name, email, age, dob, password } = req.body;
       pool.query(queries.checkEmail, [email], (error, results) => {
         if (results.rows.length) {
           res.send("Email already exists.");
         } else {
           pool.query(
             queries.postStudent,
-            [name, email, age, dob],
+            [name, email, age, dob, password],
             (error, results) => {
               if (error) throw error;
-              res.status(201).send("Student created successfully!");
+              res.status(200).send("Student created successfully!");
             }
           );
         }
