@@ -4,11 +4,11 @@ const Router = require("express");
 const router = Router();
 
 const user = require("../controllers/users");
-const error = require("../middleware/auth");
+const authentication = require("../middleware/auth");
 
 // routers
 router.post("/register", user.createUser);
-router.post("/posts", error.verifyToken, user.loginPost);
+router.post("/posts", authentication.verifyToken, user.loginPost);
 router.post("/login", user.loginUser);
 
 module.exports = router;

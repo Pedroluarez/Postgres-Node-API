@@ -14,7 +14,6 @@ module.exports = {
     }
   },
 
-  // Verify Token
   verifyToken: (req, res, next) => {
     try {
       const authHeader = req.headers["authorization"];
