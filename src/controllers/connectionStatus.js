@@ -16,7 +16,12 @@ module.exports = {
           if (err) {
             res.status(500).json({ error: err.message });
           } else {
-            res.status(200).json({ status: 200, message: "DB is connected" });
+            res.status(200).json({
+              result: "success",
+              status: 200,
+              database: "Database is connected",
+              api: `listening on port ${config.app.port}`,
+            });
           }
         });
       }
