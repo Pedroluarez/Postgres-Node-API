@@ -10,8 +10,11 @@ module.exports = {
   getStudents: (req, res) => {
     try {
       pool.query(queries.getStudents, (error, results) => {
-        if (error) throw error;
-        res.status(200).json(results.rows);
+        if (error) return error;
+        res.status(200).json({
+          result: "Success",
+          studentsData: results.rows,
+        });
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -23,11 +26,16 @@ module.exports = {
     try {
       const id = parseInt(req.params.id);
       pool.query(queries.getStudent, [id], (error, results) => {
-        if (!results.rows.length) {
-          res.send("Student is not exists!");
-        } else {
-          res.status(200).json(results.rows);
-        }
+        const noStudentIdFound = !results.rows.length;
+        if (noStudentIdFound)
+          return res.status(400).json({
+            result: "Failed",
+            message: "Invalid request or student does not exists",
+          });
+        res.status(200).json({
+          result: "Success",
+          studentData: results.rows,
+        });
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -39,18 +47,29 @@ module.exports = {
     try {
       const { name, email, age, dob, password } = req.body;
       pool.query(queries.checkEmail, [email], (error, results) => {
-        if (results.rows.length) {
-          res.send("Email already exists.");
-        } else {
-          pool.query(
-            queries.postStudent,
-            [name, email, age, dob, password],
-            (error, results) => {
-              if (error) throw error;
-              res.status(200).send("Student created successfully!");
-            }
-          );
-        }
+        const isEmptyRequestBody =
+          !req.body || Object.keys(req.body).length === 0;
+        const isEmailUsed = results.rows.length;
+        if (isEmptyRequestBody)
+          return res.status(400).json({
+            result: "Failed",
+            message: "Invalid or empty request",
+          });
+        if (isEmailUsed)
+          return res
+            .status(400)
+            .json({ result: "Failed", message: "Email already used!" });
+        pool.query(
+          queries.postStudent,
+          [name, email, age, dob, password],
+          (error, results) => {
+            if (error) return error;
+            res.status(200).json({
+              result: "Success",
+              message: "Student created successfully!",
+            });
+          }
+        );
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -63,14 +82,18 @@ module.exports = {
       const id = parseInt(req.params.id);
       pool.query(queries.getStudent, [id], (error, results) => {
         const noStudentIdFound = !results.rows.length;
-        if (noStudentIdFound) {
-          res.send("Student does not exists!");
-        } else {
-          pool.query(queries.deleteStudent, [id], (error, results) => {
-            if (error) throw error;
-            res.status(200).send("Student removed successfully!");
+        if (noStudentIdFound)
+          return res.status(400).json({
+            result: "Failed",
+            message: "Student does not exists!",
           });
-        }
+        pool.query(queries.deleteStudent, [id], (error, results) => {
+          if (error) return error;
+          res.status(200).json({
+            result: "Success",
+            message: "Student removed successfully!",
+          });
+        });
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -83,15 +106,26 @@ module.exports = {
       const id = parseInt(req.params.id);
       const { name } = req.body;
       pool.query(queries.getStudent, [id], (error, results) => {
+        const isEmptyRequestBody =
+          !req.body || Object.keys(req.body).length === 0;
         const noStudentIdFound = !results.rows.length;
-        if (noStudentIdFound) {
-          res.send("Student does not exists!");
-        } else {
-          pool.query(queries.updateStudent, [name, id], (error, results) => {
-            if (error) throw error;
-            res.status(200).send("Student updated successfully!");
+        if (isEmptyRequestBody)
+          return res.status(400).json({
+            result: "Failed",
+            message: "Invalid or empty request",
           });
-        }
+        if (noStudentIdFound)
+          return res.status(400).json({
+            result: "Failed",
+            message: "Student does not exists!",
+          });
+        pool.query(queries.updateStudent, [name, id], (error, results) => {
+          if (error) return error;
+          res.status(200).json({
+            result: "Success",
+            message: "Student updated successfully!",
+          });
+        });
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

@@ -17,13 +17,12 @@ module.exports = {
   verifyToken: (req, res, next) => {
     try {
       const authHeader = req.headers["authorization"];
-      if (!authHeader) {
-        res.json({
-          message: "Token is required",
+      if (!authHeader)
+        return res.status(401).json({
+          result: "Unathorized",
+          message: "Invalid Token",
         });
-      } else {
-        req.token = authHeader;
-      }
+      req.token = authHeader;
       next();
     } catch (error) {
       res.status(500).json({ error: error.message });
