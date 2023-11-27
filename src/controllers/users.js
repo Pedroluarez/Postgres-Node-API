@@ -72,7 +72,7 @@ module.exports = {
           });
         const tokenSignIn = jwt.sign(
           { name, password },
-          "secretkey"
+          config.app.clientSecret
           //  {expiresIn: "1h",}
         );
         res.status(200).json({
@@ -88,7 +88,7 @@ module.exports = {
   // check authentication
   loginPost: (req, res) => {
     try {
-      jwt.verify(req.token, "secretkey", (err, authData) => {
+      jwt.verify(req.token, config.app.clientSecret, (err, authData) => {
         if (err)
           return res.status(403).json({
             result: "Forbidden",
