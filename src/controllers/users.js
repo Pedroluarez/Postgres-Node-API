@@ -41,7 +41,7 @@ module.exports = {
         });
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message, stack: process.env.NODE_ENV === "development" ? err.stack : null });
     }
   },
 
@@ -81,7 +81,7 @@ module.exports = {
         });
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message, stack: process.env.NODE_ENV === "development" ? err.stack : null });
     }
   },
 
@@ -100,7 +100,7 @@ module.exports = {
         });
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message, stack: process.env.NODE_ENV === "development" ? err.stack : null });
     }
   },
 };

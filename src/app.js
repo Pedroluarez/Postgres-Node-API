@@ -13,7 +13,7 @@ module.exports = {
     try {
       console.log(`[API] App started and listening on port ${config.app.port}`);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message, stack: process.env.NODE_ENV === "development" ? err.stack : null });
     }
   }),
 };

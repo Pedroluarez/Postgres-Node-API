@@ -1,19 +1,7 @@
 "use strict";
+require("dotenv").config();
 
 module.exports = {
-  error: (err, req, res, next) => {
-    try {
-      const statusCode = res.statusCode ? res.statusCode : 500;
-      res.status(statusCode);
-      res.json({
-        message: err.message,
-        stack: process.env.NODE_ENV === "development" ? err.stack : null,
-      });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
-
   verifyToken: (req, res, next) => {
     try {
       const authHeader = req.headers["authorization"];
@@ -25,7 +13,7 @@ module.exports = {
       req.token = authHeader;
       next();
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message, stack: process.env.NODE_ENV === "development" ? err.stack : null  });
     }
-  },
+  }
 };
