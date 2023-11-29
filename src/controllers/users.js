@@ -72,8 +72,8 @@ module.exports = {
           });
         const tokenSignIn = jwt.sign(
           { name, password },
-          config.app.clientSecret
-          //  {expiresIn: "1h",}
+          config.app.clientSecret,
+           {expiresIn: "10s",}
         );
         res.status(200).json({
           result: "Successfully logged in!",
