@@ -2,6 +2,7 @@ require("dotenv").config();
 
 module.exports = {
   app: {
+    environment: process.env.APP_ENVIRONMENT,
     name: process.env.APP_NAME,
     description: process.env.APP_DESCRIPTION,
     version: process.env.APP_VERSION,
