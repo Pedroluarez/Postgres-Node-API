@@ -3,8 +3,9 @@
 const express = require("express");
 const app = express();
 const config = require("../config");
-const router = require("../src/routes/router");
-app.use(express.json());
+const router = require("../src/routes/router"); 
+
+app.use(express.json()); 
 
 app.use("/api", router);
 

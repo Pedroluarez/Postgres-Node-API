@@ -5,6 +5,7 @@ const router = Router();
 
 const connectionStatus = require("../controllers/connectionStatus");
 
+
 // checking status of the API
 router.get("/status", connectionStatus.getStatus);
 
