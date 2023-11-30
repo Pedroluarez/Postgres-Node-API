@@ -19,13 +19,10 @@ module.exports = {
   },
 
    limiter : rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minute
-    max: 5, // Limit each IP to requests per `window` (here, per 15 minutes).
+    windowMs: 1 * 60 * 1000, 
+    max: 5, 
     message: ({status: 429,
       result: "Failed",
     message: "Too many request, Please try again later",})
-    // standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
-    // legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
-    // store: ... , // Use an external store for consistency across multiple server instances.
   })
 };
