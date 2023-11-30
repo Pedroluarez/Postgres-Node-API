@@ -9,14 +9,21 @@ module.exports = {
     try {
       if (!isConnected)
         return res.status(500).json({
-          result: "failed",
-          message: "Database is not-connected",
-          error: error.message,
+          result: {
+            databaseConnection: {
+              status: "failed", 
+              message: "Database is not-connected",
+              error: error.message,
+            } 
+          } 
         });
       res.status(200).json({
-        result: "success",
-        database: "Database is connected",
-        api: `listening on port ${config.app.port}`,
+        result: {
+          databaseConnection: {
+            status: "connected", 
+            message: "Database is connected",
+          }  
+        }
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
