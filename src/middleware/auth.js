@@ -1,6 +1,7 @@
 "use strict";
 require("dotenv").config();
 const rateLimit = require("express-rate-limit");
+const expressFileupload = require('express-fileupload');
 const config = require("../../config")
 
 module.exports = {
@@ -40,5 +41,7 @@ module.exports = {
     message: ({status: 429,
       result: "Failed",
     message: "Too many request, Please try again later",})
-  })
+  }),
+  
+  fileUpload : expressFileupload(),  
 };
