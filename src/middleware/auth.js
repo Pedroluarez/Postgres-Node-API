@@ -4,7 +4,16 @@ const rateLimit = require("express-rate-limit");
 const expressFileupload = require('express-fileupload');
 const config = require("../../config")
 
-module.exports = {
+module.exports = { 
+  validateLimit : rateLimit({
+    windowMs: 1 * 60 * 1000, 
+    max: 5, 
+    message: ({result: "Failed",
+    message: "Too many request, Please try again later",})
+  }),
+  
+  fileUpload : expressFileupload(), 
+
   validateApp: (req, res, next) => {
     try {
       let _clientid = config.app.clientId;
@@ -39,7 +48,7 @@ module.exports = {
     }
 },
 
-  verifyToken: (req, res, next) => {
+  validateToken: (req, res, next) => {
     try { 
       const authHeader = req.headers["authorization"];
       
@@ -55,13 +64,4 @@ module.exports = {
     }
   },
 
-   limiter : rateLimit({
-    windowMs: 1 * 60 * 1000, 
-    max: 5, 
-    message: ({status: 429,
-      result: "Failed",
-    message: "Too many request, Please try again later",})
-  }),
-  
-  fileUpload : expressFileupload(),  
 };
