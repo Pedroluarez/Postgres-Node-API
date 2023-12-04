@@ -3,10 +3,11 @@
 const Router = require("express");
 const router = Router();
 
+const authentication = require("../middleware/auth");
 const connectionStatus = require("../controllers/connectionStatus"); 
 
 // checking status of the API
-router.get("/status", connectionStatus.getStatus);
+router.get("/status",authentication.validateApp, connectionStatus.getStatus);
  
 // routes for users
 router.use("/users", require("./users"));
