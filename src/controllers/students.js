@@ -7,9 +7,9 @@ const queries = require("../queries/queries");
 
 module.exports = {
   // get all students
-  getStudents: (req, res) => {
+  getStudents: async (req, res) => {
     try {
-      pool.query(queries.getStudents, (error, results) => {
+      await pool.query(queries.getStudents, (error, results) => {
         if (error) return error;
         res.status(200).json({
           result: "Success",
@@ -21,11 +21,30 @@ module.exports = {
     }
   },
 
+  getStudentsWithPagination: async (req, res) => { 
+    try {  
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+      const offset = (page - 1) * limit; 
+
+      const result = await pool.query(queries.getStudentsWithPagination, [
+        limit,
+        offset,
+      ]); 
+        res.status(200).json({
+          result: "Success",
+          studentsData: result.rows
+        }); 
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
   // get student by id
-  getStudent: (req, res) => {
+  getStudent: async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      pool.query(queries.getStudent, [id], async (error, results) => {
+      await pool.query(queries.getStudent, [id], async (error, results) => {
         const noStudentIdFound = !results.rows.length;
         if (noStudentIdFound)
           return res.status(400).json({
@@ -43,10 +62,10 @@ module.exports = {
   },
 
   // post student
-  postStudent: (req, res) => {
+  postStudent: async (req, res) => {
     try {
       const { name, email, age, dob, password } = req.body;
-      pool.query(queries.checkEmail, [email], async (error, results) => {
+      await pool.query(queries.checkEmail, [email], async (error, results) => {
         const isEmptyRequestBody =
           !req.body || Object.keys(req.body).length === 0;
         const isEmailUsed = results.rows.length;
@@ -77,10 +96,10 @@ module.exports = {
   },
 
   // delete student
-  deleteStudent: (req, res) => {
+  deleteStudent: async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      pool.query(queries.getStudent, [id], async (error, results) => {
+      await pool.query(queries.getStudent, [id], async (error, results) => {
         const noStudentIdFound = !results.rows.length;
         if (noStudentIdFound)
           return res.status(400).json({
@@ -101,11 +120,11 @@ module.exports = {
   },
 
   // put/update student
-  updateStudent: (req, res) => {
+  updateStudent: async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const { name } = req.body;
-      pool.query(queries.getStudent, [id], async (error, results) => {
+     await pool.query(queries.getStudent, [id], async (error, results) => {
         const isEmptyRequestBody =
           !req.body || Object.keys(req.body).length === 0;
         const noStudentIdFound = !results.rows.length;
