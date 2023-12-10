@@ -1,0 +1,18 @@
+swagger: "2.0"
+info:
+  title: My API Documentation
+  description: This is my api documentation
+  version: 1.0.0
+
+paths:
+  /status:
+    get:
+      summary: Check status
+      description: Retrieve the status of the API
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: string
+        500:
+          description: Internal server error
