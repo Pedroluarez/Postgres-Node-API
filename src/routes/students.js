@@ -6,7 +6,7 @@ const router = Router();
 const students = require("../controllers/students");
 const authentication = require("../middleware/auth");
 
-// routers
+
 router.get("/all", authentication.validateLimit, authentication.validateApp, students.getStudents);
 router.get("/", authentication.validateLimit, authentication.validateApp, authentication.appPagination, students.getStudentsWithPagination);
 router.get("/:id", students.getStudent);

@@ -4,8 +4,15 @@ const express = require("express");
 const app = express();
 const config = require("../config");
 const router = require("../src/routes/router"); 
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express"); 
+const swaggerOptions = require("../swagger/swagger")
+const swaggerResources = require("../swagger/resource"); 
 
 app.use(express.json()); 
+ 
+const swaggerSpec = swaggerJsDoc(swaggerOptions.options);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)); 
 
 app.use("/api", router);
 

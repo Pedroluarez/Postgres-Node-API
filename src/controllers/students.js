@@ -5,7 +5,7 @@ const config = require("../../config");
 const pool = new pg.Pool(config.database);
 const queries = require("../queries/queries");
 
-module.exports = {
+module.exports = {  
   // get all students
   getStudents: async (req, res) => {
     try {
