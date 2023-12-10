@@ -3,16 +3,30 @@ info:
   title: My API Documentation
   description: This is my api documentation
   version: 1.0.0
-
+host: localhost:8080/
+basePath: api/v1
+schemes:
+  - http
 paths:
   /status:
     get:
-      summary: Check status
-      description: Retrieve the status of the API
+      summary: test
+      description: test
+      parameters:
+        - name: client-id
+          in: header
+          description: test
+          required: true
+          type: string
+        - name: client-secret
+          in: header
+          description: test
+          required: true
+          type: string
       responses:
         200:
-          description: Successful operation
-          schema:
-            type: string
+          description: true
+        401:
+          descripton: test
         500:
-          description: Internal server error
+          description: server error
