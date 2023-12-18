@@ -2,17 +2,6 @@
 
 Created using Node, Express and PostgresSQL.
 
-### Application Features
-
-- Node
-- Express
-- Postgres
-- JWT
-- brypt
-- cors
-- dotenv
-- nodemon
-
 ### Setup this project
 
 After you download or clone this project, you need run this command to install Node packages
