@@ -1,6 +1,6 @@
 ## Postgres-Node-API
 
-Created using Node, Express and PostgresSQL.
+Created using Node, Express and PostgresSQL
 
 ### Setup this project
 
