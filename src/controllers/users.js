@@ -9,14 +9,14 @@ const queries = require("../queries/queries");
 
 module.exports = {
   // create a user
-  createUser: (req, res) => {
+  createUser: async (req, res) => {
     try { 
       const { name, email, age, dob, password } = req.body;
       bcrypt.hash(password, 10, (err, hash) => {
         pool.query(queries.checkEmail, [email], async (error, results) => {
-          const isEmptyRequestBody = await
+          const isEmptyRequestBody = 
             !req.body || Object.keys(req.body).length === 0;
-          const isEmailExist = await results.rows.length;
+          const isEmailExist =  results.rows.length;
           if (isEmptyRequestBody)
             return res.status(400).json({
               result: "Failed",
@@ -33,7 +33,7 @@ module.exports = {
             if (err) {
               return res.status(500).json({result: "error", message: err.message });
             }
-            await pool.query(
+            pool.query(
               queries.postStudent,
               [name, email, age, dob, hash, imagePath],
               (error, results) => {
@@ -53,7 +53,7 @@ module.exports = {
   },
 
   // login user
-  loginUser: (req, res) => {
+  loginUser: async (req, res) => {
     try {
       const { name, password } = req.body;
       pool.query(queries.checkName, [name], async (err, results) => {
@@ -93,7 +93,7 @@ module.exports = {
   },
 
   // check authentication
-  loginPost: (req, res) => {
+  loginPost: async (req, res) => {
     try {
       jwt.verify(req.token, config.app.clientSecret, async (err, authData) => {
         if (err)
