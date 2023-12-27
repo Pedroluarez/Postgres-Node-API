@@ -1,15 +1,25 @@
 name: Developement Environment Deployment
+
 on:
   push:
-    branches: 
-      - 'development'
+    branches:
+      - "development"
+      
+env:
+  # APPLICATION INFO
+  APPLICATION_NAME: emra-api
+  APPLICATION_NAMESPACE: awrasafely-core-158-dev
+  APPLICATION_VERSION: 1.0.0-dev
+  APPLICATION_PROFILE: 'dev'
+
 jobs:
   build-and-push-docker-image:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: "14"
       - run: npm install -g bats
       - run: bats -v
