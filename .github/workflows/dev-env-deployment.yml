@@ -11,8 +11,8 @@ env:
   # DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   # CI Registry
-  CI_REGISTRY: ghcr.io/${{ github.repository }}
-  CI_REGISTRY_IMAGE: ghcr.io/${{ github.repository }}
+  # CI_REGISTRY: ghcr.io/${{ github.repository }}
+  # CI_REGISTRY_IMAGE: ghcr.io/${{ github.repository }}
 
   # APPLICATION INFO
   APPLICATION_NAME: postgres-api
@@ -35,8 +35,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t $CI_REGISTRY_IMAGE:$APPLICATION_VERSION
+          docker build -t postgres-api:$APPLICATION_VERSION
 
       - name: Push Docker Image
         run: |
-          docker push $CI_REGISTRY_IMAGE:$APPLICATION_VERSION
+          docker push postgres-api:$APPLICATION_VERSION
