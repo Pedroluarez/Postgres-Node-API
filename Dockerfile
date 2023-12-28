@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
  
 #set env variables
-COPY .env.example .env
+COPY .env_example .env
 
 #open port
 EXPOSE 8080
