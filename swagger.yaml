@@ -10,6 +10,8 @@ schemes:
 paths:
   /status:
     get:
+      tags:
+        - Postgres-API
       summary: test
       description: test
       parameters:
