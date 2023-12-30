@@ -12,8 +12,9 @@ module.exports = {
       const queryResult = await pool.query(queries.getStudents);
       if (!queryResult) return error;
       res.status(200).json({
-        result: "Success",
-        studentsData: queryResult.rows,
+        result: {
+          data: queryResult.rows,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -44,17 +45,14 @@ module.exports = {
     try {
       const id = parseInt(req.params.id);
       const queryResult = await pool.query(queries.getStudent, [id]);
-      const noStudentIdFound = !queryResult.rows.length;
-      if (noStudentIdFound)
-        return res.status(400).json({
-          result: "Failed",
-          message: "Invalid request or student does not exists",
-        });
+      const noStudentIdFound = queryResult.rows[0].getstudentbyid; 
 
-      if (!queryResult) return error;
+      if (noStudentIdFound === null)
+        return res.status(400).json({
+          result: { message: "Student does not exists!" },
+        });
       res.status(200).json({
-        result: "Success",
-        studentData: queryResult.rows,
+        result: { data: queryResult.rows },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -68,17 +66,19 @@ module.exports = {
       const checkEmailResult = await pool.query(queries.checkEmail, [email]);
       const isEmptyRequestBody =
         !req.body || Object.keys(req.body).length === 0;
-      const isEmailUsed = checkEmailResult.rows.length;
+      const isEmailUsed = checkEmailResult.rows[0].checkstudentemail;
       if (isEmptyRequestBody)
         return res.status(400).json({
           result: "Failed",
           message: "Invalid or empty request",
         });
-      if (isEmailUsed)
-        return res
-          .status(400)
-          .json({ result: "Failed", message: "Email already used!" });
 
+      if (isEmailUsed !== null)
+        return res.status(400).json({
+          result: {
+            message: "Email already used!",
+          },
+        });
       const queryResult = pool.query(queries.postStudent, [
         name,
         email,
@@ -88,8 +88,9 @@ module.exports = {
       ]);
       if (!queryResult) return error;
       res.status(200).json({
-        result: "Success",
-        message: "Student created successfully!",
+        result: {
+          message: "Student created successfully!",
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -101,17 +102,16 @@ module.exports = {
     try {
       const id = parseInt(req.params.id);
       const checkStudent = await pool.query(queries.getStudent, [id]);
-      const noStudentIdFound = !checkStudent.rows.length;
-      if (noStudentIdFound)
+      const noStudentIdFound = checkStudent.rows[0].getstudentbyid;
+      if (noStudentIdFound === null)
         return res.status(400).json({
-          result: "Failed",
-          message: "Student does not exists!",
+          result: { message: "Student does not exists!" },
         });
+
       const queryResult = await pool.query(queries.deleteStudent, [id]);
       if (!queryResult) return error;
       res.status(200).json({
-        result: "Success",
-        message: "Student removed successfully!",
+        result: { message: "Student removed successfully!" },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -126,22 +126,22 @@ module.exports = {
       const checkStudent = await pool.query(queries.getStudent, [id]);
       const isEmptyRequestBody =
         !req.body || Object.keys(req.body).length === 0;
-      const noStudentIdFound = !checkStudent.rows.length;
+      const noStudentIdFound = checkStudent.rows[0].getstudentbyid;
       if (isEmptyRequestBody)
         return res.status(400).json({
-          result: "Failed",
-          message: "Invalid or empty request",
+          result: { message: "Invalid or empty request" },
         });
-      if (noStudentIdFound)
+
+      if (noStudentIdFound === null)
         return res.status(400).json({
           result: "Failed",
           message: "Student does not exists!",
         });
+
       const queryResult = await pool.query(queries.updateStudent, [name, id]);
       if (!queryResult) return error;
       res.status(200).json({
-        result: "Success",
-        message: "Student updated successfully!",
+        result: { message: "Student updated successfully!" },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
