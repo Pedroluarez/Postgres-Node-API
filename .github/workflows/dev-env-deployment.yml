@@ -11,9 +11,9 @@ env:
   DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
 
-  # CI Registry
-  # CI_REGISTRY: ghcr.io/${{ github.repository }}
-  # CI_REGISTRY_IMAGE: ghcr.io/${{ github.repository }}
+  # Continuous integration Registry
+  CI_REGISTRY: ghcr.io/${{ github.repository }}
+  CI_REGISTRY_IMAGE: ghcr.io/${{ github.repository }}
 
   # APPLICATION INFO
   APPLICATION_NAME: postgres-api
@@ -30,7 +30,7 @@ jobs:
 
       - name: Login to Docker Hub
         run: |
-          docker login -u $DOCKER_USER -p $DOCKER_TOKEN
+          docker login -u $DOCKER_USER -p $DOCKER_TOKEN $CI_REGISTRY
 
       - name: Build Docker Image
         run: |
