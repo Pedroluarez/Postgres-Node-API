@@ -3,7 +3,8 @@ name: dev-env-deployment
 on:
   push:
     branches:
-      - "development" 
+      - "development"
+      # - "dev"
 
 env:
   # Docker Credentials
