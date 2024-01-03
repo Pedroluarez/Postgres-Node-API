@@ -34,8 +34,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-         docker build -t $CI_REGISTRY_IMAGE:$APPLICATION_VERSION . 
+          docker build -t $CI_REGISTRY_IMAGE:$APPLICATION_VERSION . 
 
       - name: Push Docker Image
         run: |
-          docker push $DOCKER_USER/postgres-api:$APPLICATION_VERSION
+          docker push $CI_REGISTRY_IMAGE:$APPLICATION_VERSION
