@@ -7,42 +7,54 @@ const config = require("../../config");
 const pool = new pg.Pool(config.database);
 const queries = require("../queries/queries");
 
-module.exports = {
-  // create a user
+module.exports = { 
   createUser: async (req, res) => {
     try {
-      const { name, email, age, dob, password } = req.body;
-      bcrypt.hash(password, 10, (err, hash) => {
-        pool.query(queries.checkEmail, [email], async (error, results) => {
-          const isEmptyRequestBody =
-            !req.body || Object.keys(req.body).length === 0;
-          const isEmailExist = results.rows.length;
-          if (isEmptyRequestBody)
-            return res.status(400).json({
-              result: { message: "Invalid or empty request" },
-            });
-          if (isEmailExist)
-            return res.status(400).json({
-              result: { message: "email already exist!" },
-            });
-          const image = req.files.image;
-          const imagePath = `src/uploads/${image.name}`;
-          image.mv(imagePath, async (err) => {
-            if (err) {
-              return res.status(500).json({ result: { message: err.message } });
-            }
-            pool.query(
-              queries.postStudent,
-              [name, email, age, dob, hash, imagePath],
-              (error, results) => {
-                if (error) return error;
-                res.status(200).json({
-                  result: { message: "User created successfully!" },
-                });
-              }
-            );
-          });
+      const isEmptyRequestBody =
+        !req.body || Object.keys(req.body).length === 0;
+
+      if (isEmptyRequestBody)
+        return res.status(400).json({
+          result: { message: "Invalid or empty request" },
         });
+
+      const { name, email, age, dob, password } = req.body;
+
+      const hashPassword = await bcrypt.hash(password, 10);
+
+      const checkEmail = await pool.query(queries.checkEmail, [email]);
+
+      const checkEmailResult = checkEmail.rows[0].checkstudentemail;
+
+      if (checkEmailResult !== null)
+        return res.status(400).json({
+          result: {
+            message: "Email already used",
+          },
+        });
+
+      const image = req.files.image;
+      const imagePath = `src/uploads/${image.name}`;
+      await image.mv(imagePath);
+
+      const queryResults = await pool.query(queries.postStudent, [
+        name,
+        email,
+        age,
+        dob,
+        hashPassword,
+        imagePath,
+      ]);
+
+      if (!queryResults)
+        return res.status(500).json({
+          result: {
+            message: error.message,
+          },
+        });
+
+      res.status(200).json({
+        message: "Successfully register", 
       });
     } catch (error) {
       res.status(500).json({
@@ -78,7 +90,7 @@ module.exports = {
             message: "Invalid username or password",
           });
         const token = jwt.sign({ name, password }, config.app.clientSecret, {
-          expiresIn: "10s",
+          expiresIn: "1D",
         });
         res.status(200).json({
           result: {

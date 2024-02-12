@@ -15,7 +15,7 @@ app.use("/api/v1", router);
 module.exports = {
   listen: app.listen(config.app.port, (req, res) => {
     try {
-      console.log(`[API] App started and listening on port ${config.app.port}`);
+      console.log(`[API] App started and listening on port ${config.app.port} \n[DB] Database is connected`);
     } catch (error) {
       res
         .status(500)

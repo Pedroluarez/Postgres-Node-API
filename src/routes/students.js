@@ -13,5 +13,7 @@ router.get("/:id", students.getStudent);
 router.post("/", students.postStudent);
 router.put("/:id", students.updateStudent);
 router.delete("/:id", students.deleteStudent);
+router.post("/export-pdf/:id", students.exportData);
+
 
 module.exports = router;

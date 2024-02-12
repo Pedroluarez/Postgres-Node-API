@@ -4,6 +4,9 @@ const pg = require("pg");
 const config = require("../../config");
 const pool = new pg.Pool(config.database);
 const queries = require("../queries/queries");
+const axios = require("axios");
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
 
 module.exports = {
   // get all students
@@ -45,7 +48,7 @@ module.exports = {
     try {
       const id = parseInt(req.params.id);
       const queryResult = await pool.query(queries.getStudent, [id]);
-      const noStudentIdFound = queryResult.rows[0].getstudentbyid; 
+      const noStudentIdFound = queryResult.rows[0].getstudentbyid;
 
       if (noStudentIdFound === null)
         return res.status(400).json({
@@ -146,5 +149,56 @@ module.exports = {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
+  },
+  exportData: async (req, res) => {
+    const studentId = req.params.id;
+
+    if (!studentId || studentId.trim() === "")
+      return res.status(400).json({
+        result: {
+          message: "Id is null or empty",
+        },
+      });
+
+    const getStudentData = await axios.get(
+      `http://localhost:8080/api/v1/students/${studentId}`
+    );
+
+    if (!getStudentData)
+      return res.status(400).json({
+        result: {
+          message: error.message,
+        },
+      });
+
+    const id = getStudentData.data.result.data[0].getstudentbyid.id;
+    const name = getStudentData.data.result.data[0].getstudentbyid.name;
+    const email = getStudentData.data.result.data[0].getstudentbyid.email;
+    const age = getStudentData.data.result.data[0].getstudentbyid.age;
+    const dob = getStudentData.data.result.data[0].getstudentbyid.dob;
+
+    const doc = new PDFDocument();
+    const fileName = `student_record_${studentId}_${Date.now()}.pdf`;
+    const stream = fs.createWriteStream(fileName);
+
+    doc.pipe(stream);
+    doc
+      .fontSize(14)
+      .text("student record Record", { align: "center" })
+      .moveDown(0.5);
+    doc.fontSize(12).text(`id: ${id}`);
+    doc.fontSize(12).text(`name: ${name}`);
+    doc.fontSize(12).text(`email: ${email}`);
+    doc.fontSize(12).text(`age: ${age}`);
+    doc.fontSize(12).text(`dob: ${dob}`);
+
+    doc.end();
+
+    res.status(200).json({
+      result: {
+        message: "pdf generate successfully",
+        fileName: `${fileName}`
+      },
+    }); 
   },
 };
