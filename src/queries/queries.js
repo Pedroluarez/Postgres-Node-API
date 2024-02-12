@@ -6,7 +6,7 @@ module.exports = {
   getStudent: `SELECT getStudentById($1)`,
   checkEmail: `SELECT checkStudentEmail($1)`,
   checkName: `SELECT checkName($1)`,
-  postStudent: `SELECT postStudent($1,$2,$3,$4,$5)`,
+  postStudent: `SELECT postStudent($1,$2,$3,$4,$5,$6)`,
   updateStudent: `select putStudent($1,$2)`,
   deleteStudent: `select deleteStudent($1)`,
 }; 
