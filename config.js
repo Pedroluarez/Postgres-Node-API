@@ -18,4 +18,7 @@ module.exports = {
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
   },
+  exaktAuth: {
+    host: process.env.EXAKTAUTH,
+  },
 };

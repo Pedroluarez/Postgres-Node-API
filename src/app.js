@@ -10,7 +10,7 @@ const swaggerDocument = YAML.load("./swagger.yaml");
   
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
-app.use("/api/v1", router);
+app.use("/api/v1", router); 
 
 module.exports = {
   listen: app.listen(config.app.port, (req, res) => {

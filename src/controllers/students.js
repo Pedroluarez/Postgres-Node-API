@@ -6,9 +6,51 @@ const pool = new pg.Pool(config.database);
 const queries = require("../queries/queries");
 const axios = require("axios");
 const PDFDocument = require("pdfkit");
-const fs = require("fs");
+const fs = require("fs"); 
+const jsonexport = require('jsonexport');
+const dataJson = ("../data.json")
 
 module.exports = {
+  exportDataCsv: async (req, res) => {
+    const studentId = req.params.id;
+    try { 
+      const jsonData = [
+        { name: 'John', age: 30, city: 'New York' },
+        { name: 'Jane', age: 25, city: 'San Francisco' },
+        { name: 'Doe', age: 40, city: 'Los Angeles' }
+      ];
+      // if (!studentId || studentId.trim() === "")
+      // return res.status(400).json({
+      //   result: {
+      //     message: "Id is null or empty",
+      //   },
+      // });
+      jsonexport(jsonData, function(err, csv) {
+        if (err) {
+          console.error(err); // Log the error for debugging
+          return res.status(500).send('Error converting JSON to CSV');
+        }
+        
+        // Send the CSV as response
+        res.header('Content-Type', 'text/csv');
+        res.attachment('data.csv');
+        res.send(csv);
+      });
+
+      // res.status(200).json({
+      //   result: { message: "Working" },
+      // }); 
+    //   const fileName = `Patient_${studentId}_Data_${Date.now()}.csv`;
+    //   res.setHeader("Content-Type", "text/csv");
+    //   res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
+    //   const jsonData = [
+    //     { name: 'John', age: 30, city: 'New York' },
+    //     { name: 'Alice', age: 25, city: 'Los Angeles' }, 
+    // ];
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
   // get all students
   getStudents: async (req, res) => {
     try {
@@ -149,8 +191,8 @@ module.exports = {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  },
-  exportData: async (req, res) => {
+  }, 
+  exportDataPdf: async (req, res) => {
     const studentId = req.params.id;
 
     if (!studentId || studentId.trim() === "")
@@ -197,8 +239,8 @@ module.exports = {
     res.status(200).json({
       result: {
         message: "pdf generate successfully",
-        fileName: `${fileName}`
+        fileName: `${fileName}`,
       },
-    }); 
+    });
   },
 };
