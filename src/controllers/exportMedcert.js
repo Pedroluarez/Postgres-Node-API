@@ -1,68 +1,47 @@
 const pg = require("pg");
 const config = require("../../config");
-const { PDFDocument } = require("pdf-lib");
 const fs = require("fs").promises;
 const path = require("path");
+const { PDFDocument, rgb } = require("pdf-lib");
 
 module.exports = {
   exportMedcert: async (req, res) => {
     try {
-      const formPath = "../documents/medicalCertificate.pdf";
+      const formPath = "../documents/medicalCertificatePDF.pdf";
       const formUrl = path.resolve(__dirname, formPath);
+      const destinationPDF = path.resolve(__dirname, "medicalCertificate.pdf");
 
-      // Check if the file exists
-      try {
-        await fs.access(formUrl);
-        console.log("File exists!");
-      } catch (error) {
-        console.error("File does not exist:", error);
-        return res.status(404).json({ error: "PDF file not found" });
-      }
-
-      // Read the PDF file
-      let pdfBytes;
-      try {
-        pdfBytes = await fs.readFile(formUrl);
-      } catch (error) {
-        console.error("Error reading PDF file:", error);
-        return res.status(500).json({ error: "Failed to read PDF file" });
-      }
+      // Read the source PDF
+      const pdfBuffer = await fs.readFile(formUrl);
 
       // Load the PDF document
-      let pdfDoc;
-      try {
-        pdfDoc = await PDFDocument.load(pdfBytes);
-      } catch (error) {
-        console.error("Error loading PDF document:", error);
-        return res.status(500).json({ error: "Failed to load PDF document" });
-      }
+      const pdfDoc = await PDFDocument.load(pdfBuffer);
 
-      // Get the form fields and fill in the text fields
+      // Get the form fields from the PDF
       const form = pdfDoc.getForm();
-      const fullName = form.getTextField("fullname");
-      fullName.setText("Mario");
 
-      // Save the modified PDF
-      let modifiedPdfBytes;
-      try {
-        modifiedPdfBytes = await pdfDoc.save();
-      } catch (error) {
-        console.error("Error saving modified PDF:", error);
-        return res.status(500).json({ error: "Failed to save modified PDF" });
-      }
+      // Define the data to fill into the form fields
+      const data = {
+        fullName: "John Doe",
+        age: "25",
+        gender: "Male",
+        facilityName: "True Medical Hospital"
+      };
 
-      // Verify the modified PDF
-      if (!modifiedPdfBytes || modifiedPdfBytes.length === 0) {
-        console.error("Modified PDF is empty or invalid");
-        return res.status(500).json({ error: "Modified PDF is empty or invalid" });
-      }
+      // Set the value for the "fullname" field
+      form.getTextField("fullName").setText(data.fullName);
+      form.getTextField("age").setText(data.age);
+      form.getTextField("gender").setText(data.gender);
+      form.getTextField("facilityName").setText(data.facilityName);
 
-      // Set response headers and send the modified PDF as the response
-      res.setHeader("Content-Type", "application/pdf");
-      res.setHeader("Content-Disposition", "attachment; filename=modified.pdf");
-      res.send(modifiedPdfBytes);
+      // Save the modified PDF to a new file
+      const modifiedPdfBytes = await pdfDoc.save();
+      await fs.writeFile(destinationPDF, modifiedPdfBytes);
+
+      return res
+        .status(200)
+        .json({ result: { message: "PDF form filled successfully" } });
     } catch (error) {
-      console.error("Error generating med cert:", error);
       res.status(500).json({ error: error.message });
     }
   },
