@@ -11,6 +11,7 @@ const jsonexport = require('jsonexport');
 const dataJson = ("../data.json")
 
 module.exports = {
+  // check the export csv in emra/telemed/exakt that you used
   exportDataCsv: async (req, res) => {
     const studentId = req.params.id;
     try { 
